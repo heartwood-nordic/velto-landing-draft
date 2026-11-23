@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Velto landing: why · what · how board</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F2EDE4;--ink:#1A1A1A;--muted:#6B6B6B;--ochre:#C76A3A;--line:#D9D2C6;--card:#FFFFFF}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:14px}
+.draft{background:var(--ink);color:#E6E0D6;font-size:12px;text-align:center;padding:5px}
+header{display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:14px 20px;border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+header h1{font-size:17px;font-weight:600;margin:0 12px 0 0;letter-spacing:-.01em}
+header .sp{flex:1}
+button,.seg{font:inherit;font-size:13px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:7px;padding:6px 11px;cursor:pointer}
+button:hover{border-color:var(--ink)}
+button.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.seg{display:inline-flex;padding:0;overflow:hidden}
+.seg button{border:0;border-radius:0;padding:6px 10px}
+.seg button.on{background:var(--ink);color:var(--bg)}
+.help{font-size:12px;color:var(--muted);padding:8px 20px 0}
+.board{display:grid;grid-template-columns:repeat(5,minmax(240px,1fr));gap:14px;padding:14px 20px 40px;overflow-x:auto;align-items:start}
+.col{background:rgba(255,255,255,.35);border:1px solid var(--line);border-radius:10px;padding:10px;min-height:300px;display:flex;flex-direction:column}
+.col.parked{background:rgba(26,26,26,.04);border-style:dashed}
+.colhead{padding:4px 4px 10px}
+.colhead .k{font-size:11px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--ochre)}
+.colhead .t{font-size:16px;font-weight:600;margin-top:2px}
+.colhead .q{font-size:12px;color:var(--muted);margin-top:3px;line-height:1.4}
+.colhead .wc{font-size:11px;color:var(--muted);margin-top:6px}
+.list{flex:1;min-height:200px;display:flex;flex-direction:column;gap:8px}
+.card{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--muted);border-radius:8px;padding:9px 10px 10px;cursor:grab;position:relative;line-height:1.4}
+.card:active{cursor:grabbing}
+.card .chip{font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:6px;margin-bottom:4px}
+.card .txt{outline:none;white-space:pre-wrap}
+.card .txt[contenteditable=true]{background:#FFF8F0;box-shadow:0 0 0 2px var(--ochre);border-radius:4px;cursor:text}
+.card img{display:block;width:100%;margin-top:7px;border-radius:4px;border:1px solid var(--line);pointer-events:none}
+.card.compact img{display:none}
+.card .x{position:absolute;top:5px;right:6px;border:0;background:none;color:var(--muted);font-size:15px;padding:0 4px;line-height:1;opacity:0}
+.card:hover .x{opacity:1}
+.card .src{font-size:10.5px;color:var(--muted);margin-top:5px}
+.t-headline{border-left-color:var(--ink)} .t-headline .txt{font-size:15.5px;font-weight:600}
+.t-text{border-left-color:#B8B4A8}
+.t-graphic{border-left-color:var(--ochre)}
+.t-proof{border-left-color:#3E6B5A}
+.t-cta{border-left-color:var(--ochre);background:#FBF3EC} .t-cta .txt{font-weight:600;color:var(--ochre)}
+.t-label .txt{font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ochre)}
+.t-idea{border-left-color:#7A5AA6;background:#F7F3FB}
+.ghost{opacity:.35}
+.chosen{box-shadow:0 8px 24px rgba(0,0,0,.12)}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:11.5px;color:var(--muted);padding:6px 20px 0}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px;background:var(--c)}
+dialog{border:1px solid var(--line);border-radius:10px;padding:18px;max-width:560px;width:92vw}
+dialog textarea{width:100%;min-height:90px;font:inherit;border:1px solid var(--line);border-radius:6px;padding:8px}
+dialog select,dialog input{font:inherit;border:1px solid var(--line);border-radius:6px;padding:6px}
+dialog .row{display:flex;gap:8px;margin-top:10px;align-items:center}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:8px 14px;border-radius:8px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none}
+.toast.on{opacity:1}
+@media print{header,.help,.legend,.draft,.card .x{display:none}.board{grid-template-columns:repeat(5,1fr);overflow:visible}.card img{max-height:90px;object-fit:contain}}
+</style>
+</head>
+<body>
+<div class="draft">Arbejdsværktøj til mødet om landingpage v4. Ikke offentlig. · Working tool for the landing v4 meeting. Not public.</div>
+<header>
+  <h1>Velto landing · <span data-i18n="title">hvorfor · hvad · hvordan</span></h1>
+  <div class="seg" id="lang"><button data-l="da" class="on">DA</button><button data-l="en">EN</button></div>
+  <div class="seg" id="view"><button data-v="full" class="on" data-i18n="full">Med billeder</button><button data-v="compact" data-i18n="compact">Kun tekst</button></div>
+  <span class="sp"></span>
+  <button id="add" data-i18n="add">+ Ny blok</button>
+  <button id="outline" data-i18n="outline">Kopiér som disposition</button>
+  <button id="share" class="primary" data-i18n="share">Kopiér link til denne opstilling</button>
+  <button id="reset" data-i18n="reset">Nulstil til v4</button>
+</header>
+<div class="help" data-i18n="help">Træk blokkene mellem kolonnerne og op og ned. Rækkefølgen i en kolonne er rækkefølgen på siden. Dobbeltklik på en tekst for at rette den. Alt gemmes i din browser; "Kopiér link" giver et link, hvor de andre ser præcis samme opstilling.</div>
+<div class="legend">
+  <span style="--c:#1A1A1A" data-i18n="lg-headline">Overskrift</span><span style="--c:#B8B4A8" data-i18n="lg-text">Tekst</span><span style="--c:#C76A3A" data-i18n="lg-graphic">Grafik / knap</span><span style="--c:#3E6B5A" data-i18n="lg-proof">Bevis</span><span style="--c:#7A5AA6" data-i18n="lg-idea">Idé, ikke på siden endnu</span>
+</div>
+<main class="board" id="board"></main>
+<dialog id="dlg">
+  <form method="dialog">
+    <div style="font-weight:600;font-size:15px" data-i18n="newblock">Ny blok</div>
+    <div class="row"><label data-i18n="type">Type</label>
+      <select id="ntype"><option value="headline">Overskrift · Headline</option><option value="text" selected>Tekst · Text</option><option value="proof">Bevis · Proof</option><option value="cta">Knap · Button</option><option value="graphic">Grafik · Graphic</option><option value="idea">Idé · Idea</option></select>
+      <label data-i18n="column">Kolonne</label><select id="ncol"></select></div>
+    <div class="row" style="display:block"><div style="font-size:12px;color:var(--muted)">Dansk</div><textarea id="nda"></textarea></div>
+    <div class="row" style="display:block"><div style="font-size:12px;color:var(--muted)">English</div><textarea id="nen"></textarea></div>
+    <div class="row" style="justify-content:flex-end"><button value="cancel" data-i18n="cancel">Annuller</button><button value="ok" class="primary" id="nok" data-i18n="addit">Tilføj</button></div>
+  </form>
+</dialog>
+<div class="toast" id="toast"></div>
+<script src="Sortable.min.js"></script>
+<script>
+const COLS = [
+  {id:'why', k:{da:'Hvorfor',en:'Why'}, t:{da:'Værdien for udvikleren',en:'The value for the developer'}, q:{da:'Hvad står på spil, og hvad får jeg? Står øverst.',en:'What is at stake, and what do I get? Goes at the top.'}},
+  {id:'what', k:{da:'Hvad',en:'What'}, t:{da:'Hvad Velto gør',en:'What Velto does'}, q:{da:'Det, du ikke får i dag. Her skal "wow" ske.',en:'What you do not get today. This is where the "wow" happens.'}},
+  {id:'how', k:{da:'Hvordan',en:'How'}, t:{da:'Sådan virker det',en:'How it works'}, q:{da:'Find potentialet, lever det. Playbook og afslutning.',en:'Find the potential, deliver it. Playbook and close.'}},
+  {id:'about', k:{da:'Egen side',en:'Own page'}, t:{da:'Om Velto',en:'About Velto'}, q:{da:'Mission, problem, løsning, bygget med branchen.',en:'Mission, problem, solution, built with the industry.'}},
+  {id:'parked', k:{da:'Ikke på siden',en:'Not on the page'}, t:{da:'Parkeret',en:'Parked'}, q:{da:'Skåret fra v3, idéer til senere, ting vi er i tvivl om.',en:'Cut from v3, ideas for later, things we are unsure about.'}, parked:true},
+];
+// Blocks from the landing v4 doc (20 Nov 2026) and v3. "src" says where a block comes from.
+const CARDS = [
+  {id:'h-label', col:'why', type:'label', src:'v4 fold 1', da:'For bygherren og alle, der skal levere byggeriet', en:'For the client and everyone who has to deliver the building'},
+  {id:'h-h1', col:'why', type:'headline', src:'v4 fold 1', da:'Et byggeri bliver godt eller dyrt i den første fase.', en:'A building becomes good or expensive in the first phase.'},
+  {id:'h-lead', col:'why', type:'text', src:'v4 fold 1', da:'Velto er AI-sparringspartneren, der rykker de store beslutninger to faser frem og skaber det samarbejde, der bærer ambitionen helt ud i det færdige byggeri.', en:'Velto is the AI sparring partner that moves the big decisions two phases forward and creates the collaboration that carries the ambition all the way into the finished building.'},
+  {id:'h-gains', col:'why', type:'text', src:'v4 fold 1', da:'Investerbart · Byggbart · Bæredygtigt · Godt at bo i\nDu bestemmer, hvad der vejer tungest.', en:'Investable · Buildable · Sustainable · Good to live in\nYou decide what matters most.'},
+  {id:'h-cta', col:'why', type:'cta', src:'v4 fold 1', da:'[ Prøv Velto ]  [ Book et møde ]\nPrøv gratis i 7 dage.', en:'[ Try Velto ]  [ Book a meeting ]\nTry it free for 7 days.'},
+  {id:'g-five', col:'why', type:'graphic', src:'v4 fold 1', img:'fivesteps', da:'Femtrinsgrafikken: Din grund · Sammenlign · Samarbejd fra start · Et grundlag, der holder · Lever potentialet', en:'The five-step graphic: Your site · Compare · Collaborate from the start · A basis that holds · Deliver the potential'},
+  {id:'p-quote', col:'why', type:'proof', src:'v4 fold 2', da:'"Mange projekter bliver aldrig til noget. Det er toppen af pyramiden, vi ser. Derfor er det vigtigt, at det projekt, vi vælger at gå videre med, bygger på så meget information som muligt."\nCarl Olofsson, BIM-leder, JM', en:'"Many projects never happen. It is the top of the pyramid we see. That is why it is important that the project we choose to take forward is based on as much information as possible."\nCarl Olofsson, BIM lead, JM (translated)'},
+  {id:'p-line', col:'why', type:'text', src:'v4 fold 2', da:'Med Velto ved du tidligt, hvilke projekter der er værd at gå videre med, og hvad det rigtige byggeri koster.', en:'With Velto you know early which projects are worth taking forward, and what the right building costs.'},
+  {id:'p-figs', col:'why', type:'proof', src:'v4 fold 2', da:'2,7 mio. kr. er én procent af projektprisen, når systemet vælges, før alternativerne er regnet igennem.\n1,8 mio. kr. i husleje for hver måned, et projekt må tegnes om.\n(180 boliger, ca. 15.000 m², ca. 265 mio. kr.)', en:'DKK 2.7m is one percent of the project price, when the system is chosen before the alternatives are worked through.\nDKK 1.8m in rent for every month a project has to be redrawn.\n(180 homes, approx. 15,000 m², approx. DKK 265m)'},
+
+  {id:'w-label', col:'what', type:'label', src:'v4 fold 3', da:'Det, du ikke får i dag', en:'What you do not get today'},
+  {id:'w-h2', col:'what', type:'headline', src:'v4 fold 3', da:'Svarene kommer, mens du stadig kan bruge dem.', en:'The answers come while you can still use them.'},
+  {id:'w-lead', col:'what', type:'text', src:'v4 fold 3', da:'Velto kender grunden, regner på hvert valg og husker, hvad I har besluttet. Ikke endnu et sted at gemme dokumenter, men en sparringspartner, der regner med.', en:'Velto knows the site, calculates every choice and remembers what you have decided. Not another place to store documents, but a sparring partner that does the maths with you.'},
+  {id:'g-team', col:'what', type:'graphic', src:'v4 fold 3', img:'team', da:'Velto i midten af teamet (Jørns trekant)', en:'Velto in the middle of the team (Jørn\'s triangle)'},
+  {id:'w-1', col:'what', type:'text', src:'v4 fold 3', da:'Kend grundens muligheder på minutter. Lokalplan, byggeret og hvad der kan stå på grunden, hentet fra adressen.', en:'Know what the site allows in minutes. Local plan, building rights and what can stand on the site, fetched from the address.'},
+  {id:'w-2', col:'what', type:'text', src:'v4 fold 3', da:'Se pris og CO2 på hvert valg. CLT, hybrid og beton side om side, med økonomi og LCA.', en:'See price and CO2 for every choice. CLT, hybrid and concrete side by side, with cost and LCA.'},
+  {id:'w-3', col:'what', type:'text', src:'v4 fold 3', da:'De rigtige partnere med fra start. Rådgiver, arkitekt, ingeniør og producent arbejder på de samme tal.', en:'The right partners on board from the start. Advisor, architect, engineer and manufacturer work on the same numbers.'},
+  {id:'w-4', col:'what', type:'text', src:'v4 fold 3', da:'Et grundlag, der holder. Beslutningerne samles i ét fælles datagrundlag, som projektering, udbud og finansiering bygger videre på.', en:'A basis that holds. The decisions are collected in one shared data basis that design, tender and financing build on.'},
+
+  {id:'o-h2', col:'how', type:'headline', src:'v4 fold 4', da:'Fra adresse til færdigt byggeri, på ét grundlag.', en:'From address to finished building, on one basis.'},
+  {id:'o-build', col:'how', type:'text', src:'v4 fold 4', da:'01 · Velto.build · Find potentialet\nFortæl Velto om din grund og dit projekt. På få minutter ser du, hvad der kan bygges, hvad hvert valg koster, og hvor du ligger på CO2. Inviter dine partnere ind, og lås retningen. [ Prøv Velto ]', en:'01 · Velto.build · Find the potential\nTell Velto about your site and project. In a few minutes you see what can be built, what each choice costs, and where you stand on CO2. Invite your partners in and lock the direction. [ Try Velto ]'},
+  {id:'o-deliver', col:'how', type:'text', src:'v4 fold 4', da:'02 · Velto Deliver · Lever det\nDet er her, kæden hopper af i dag. Beslutningerne følger med ind i projekteringen: arkitekt og ingeniør arbejder videre i egne værktøjer og med egne data. [ Book et møde ]', en:'02 · Velto Deliver · Deliver it\nThis is where the chain breaks today. The decisions follow into design: the architect and engineer keep working in their own tools and with their own data. [ Book a meeting ]'},
+  {id:'g-deliver', col:'how', type:'graphic', src:'v4 fold 4', img:'deliver', da:'Deliver-diagrammet fra playbooken', en:'The Deliver diagram from the playbook'},
+  {id:'o-play', col:'how', type:'text', src:'v4 fold 5', img:'playbook', da:'Velto Playbook: Se hvordan det virker i syv trin. 180 boliger i Gellerup, Aarhus. [ Download playbook ]', en:'Velto Playbook: See how it works in seven steps. 180 homes in Gellerup, Aarhus. [ Download playbook ]'},
+  {id:'o-close', col:'how', type:'cta', src:'v4 fold 6', da:'Fortæl Velto om dit projekt.\nDet tager få minutter. [ Prøv Velto ]  [ Book et møde ]', en:'Tell Velto about your project.\nIt takes a few minutes. [ Try Velto ]  [ Book a meeting ]'},
+
+  {id:'a-h1', col:'about', type:'headline', src:'v4 Om Velto', da:'Vi bygger den intelligente sparringspartner til byggeriets første beslutninger.', en:'We are building the intelligent sparring partner for the first decisions in construction.'},
+  {id:'a-mission', col:'about', type:'text', src:'v4 Om Velto', da:'Mission: realisere det potentiale, der i dag går tabt i spild og manglende optimering i byggeriets tidlige faser. Så byggerier bliver mere investerbare, bæredygtige og bedre at bo i.', en:'Mission: realise the potential lost today to waste and missing optimisation in the early phases of construction. So buildings become more investable, sustainable and better to live in.'},
+  {id:'a-problem', col:'about', type:'text', src:'v4 Om Velto', da:'Problemet: beslutningerne om pris, CO2 og kvalitet træffes sent og hver for sig. Hver part arbejder på sine egne data, og kæden hopper af på vejen ud i det færdige byggeri.', en:'The problem: decisions on price, CO2 and quality are made late and separately. Each party works on its own data, and the chain breaks on the way to the finished building.'},
+  {id:'g-pyr', col:'about', type:'graphic', src:'v4 Om Velto', img:'pyramid', da:'JM-pyramiden: toppen er det skjulte tab, bunden det synlige spild', en:'The JM pyramid: the top is the hidden loss, the bottom the visible waste'},
+  {id:'a-solve', col:'about', type:'text', src:'v4 Om Velto', da:'Sådan løser Velto det: en AI-sparringspartner, der kender grunden, regner på hvert valg og husker, hvad der er besluttet og hvorfor. AI-native, ikke et gammelt system med en chat ovenpå.', en:'How Velto solves it: an AI sparring partner that knows the site, calculates every choice and remembers what was decided and why. AI-native, not an old system with a chat on top.'},
+  {id:'a-cocreate', col:'about', type:'cta', src:'v4 Om Velto', da:'Bygget med branchen: vi løser benspændene ét ad gangen.\n[ Bliv co-creation-partner ]  [ Del et benspænd ]', en:'Built with the industry: we solve the obstacles one at a time.\n[ Become a co-creation partner ]  [ Share an obstacle ]'},
+  {id:'a-kring', col:'about', type:'proof', src:'v4 Om Velto', da:'Bygget med KRING, en nordisk venture-platform for digitale og AI-drevne virksomheder. [ kring.com ]', en:'Built with KRING, a Nordic venture platform for digital and AI-driven companies. [ kring.com ]'},
+
+  {id:'x-optim', col:'parked', type:'idea', src:'v4 note, Jørn', da:'Fortæl Velto, hvad der betyder mest for dig, og Velto foreslår den kombination, der passer bedst til dine mål for investering, bæredygtighed og livskvalitet.', en:'Tell Velto what matters most to you, and Velto suggests the combination that best fits your goals for investment, sustainability and quality of life.'},
+  {id:'x-v3hero', col:'parked', type:'headline', src:'v3 hero', da:'Byggeriets vigtigste beslutninger træffes for sent. Velto flytter dem frem.', en:'Construction\'s most important decisions are made too late. Velto moves them forward.'},
+  {id:'x-draft1', col:'parked', type:'headline', src:'v4 hero, udkast 1', da:'Velto er AI\'en, der flytter byggeriets vigtigste beslutninger frem.', en:'Velto is the AI that moves construction\'s most important decisions forward.'},
+  {id:'x-almene', col:'parked', type:'text', src:'v3', da:'Almene boliger. Sektorens krav og maksimumsbeløb fra første dag. Billigere, mere bæredygtigt og bedre at bo i, uden at designet dikteres.', en:'Social housing. The sector\'s requirements and maximum amounts from day one. Cheaper, more sustainable and better to live in, without dictating the design.'},
+  {id:'x-team6', col:'parked', type:'text', src:'v3', da:'Udvikleren i centrum. Hele teamet med. Bygherrerådgiver, arkitekt, ingeniør, entreprenør, producent, investor og bank, hver med én linje.', en:'The developer at the centre. The whole team on board. Client advisor, architect, engineer, contractor, manufacturer, investor and bank, one line each.'},
+  {id:'x-afslag', col:'parked', type:'proof', src:'v3', da:'Afslag over CO2-grænsen i BR18. Grænsen strammes i 2027 og 2029.', en:'Rejection above the BR18 CO2 limit. The limit tightens in 2027 and 2029.'},
+];
+const KEY = 'velto-landing-board-v1';
+const UI = {
+  title:{da:'hvorfor · hvad · hvordan',en:'why · what · how'}, full:{da:'Med billeder',en:'With images'}, compact:{da:'Kun tekst',en:'Text only'},
+  add:{da:'+ Ny blok',en:'+ New block'}, outline:{da:'Kopiér som disposition',en:'Copy as outline'}, share:{da:'Kopiér link til denne opstilling',en:'Copy link to this layout'}, reset:{da:'Nulstil til v4',en:'Reset to v4'},
+  help:{da:'Træk blokkene mellem kolonnerne og op og ned. Rækkefølgen i en kolonne er rækkefølgen på siden. Dobbeltklik på en tekst for at rette den. Alt gemmes i din browser; "Kopiér link" giver et link, hvor de andre ser præcis samme opstilling.',
+        en:'Drag the blocks between the columns and up and down. The order in a column is the order on the page. Double-click a text to edit it. Everything is saved in your browser; "Copy link" gives a link where the others see exactly the same layout.'},
+  'lg-headline':{da:'Overskrift',en:'Headline'}, 'lg-text':{da:'Tekst',en:'Text'}, 'lg-graphic':{da:'Grafik / knap',en:'Graphic / button'}, 'lg-proof':{da:'Bevis',en:'Proof'}, 'lg-idea':{da:'Idé, ikke på siden endnu',en:'Idea, not on the page yet'},
+  newblock:{da:'Ny blok',en:'New block'}, type:{da:'Type',en:'Type'}, column:{da:'Kolonne',en:'Column'}, cancel:{da:'Annuller',en:'Cancel'}, addit:{da:'Tilføj',en:'Add'},
+  words:{da:'ord',en:'words'}, blocks:{da:'blokke',en:'blocks'}, copied:{da:'Kopieret',en:'Copied'}, linkcopied:{da:'Link kopieret. Send det til de andre.',en:'Link copied. Send it to the others.'},
+  resetq:{da:'Nulstil til v4-opstillingen? Dine flytninger og rettelser går tabt.',en:'Reset to the v4 layout? Your moves and edits are lost.'}, del:{da:'Fjern blokken?',en:'Remove the block?'},
+};
+const TYPE = {headline:{da:'Overskrift',en:'Headline'},text:{da:'Tekst',en:'Text'},graphic:{da:'Grafik',en:'Graphic'},proof:{da:'Bevis',en:'Proof'},cta:{da:'Knap',en:'Button'},label:{da:'Mærke',en:'Label'},idea:{da:'Idé',en:'Idea'}};
+let lang = 'da', compact = false, state;
+
+function defaults(){ const s = {order:{}, edits:{}, added:[], removed:[]}; COLS.forEach(c => s.order[c.id] = CARDS.filter(k => k.col === c.id).map(k => k.id)); return s; }
+function enc(o){ return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
+function dec(s){ s = s.replace(/-/g,'+').replace(/_/g,'/'); return JSON.parse(decodeURIComponent(escape(atob(s)))); }
+function load(){
+  const h = location.hash.match(/#s=(.+)/);
+  if (h) { try { state = dec(h[1]); save(); history.replaceState(null,'',location.pathname); return; } catch(e){} }
+  try { state = JSON.parse(localStorage.getItem(KEY)) || defaults(); } catch(e){ state = defaults(); }
+  // blocks added to the defaults later go to their column
+  const known = new Set(Object.values(state.order).flat().concat(state.removed||[]));
+  CARDS.forEach(k => { if (!known.has(k.id)) (state.order[k.col] ||= []).push(k.id); });
+}
+function save(){ localStorage.setItem(KEY, JSON.stringify(state)); }
+function card(id){ const base = CARDS.find(k => k.id === id) || (state.added||[]).find(k => k.id === id); if (!base) return null; return {...base, ...(state.edits[id]||{})}; }
+const t = k => (UI[k]||{})[lang] || k;
+function words(s){ return (s.match(/[\p{L}\p{N}][\p{L}\p{N}.,'-]*/gu)||[]).length; }
+
+function render(){
+  document.documentElement.lang = lang;
+  document.querySelectorAll('[data-i18n]').forEach(el => el.textContent = t(el.dataset.i18n));
+  const board = document.getElementById('board'); board.innerHTML = '';
+  COLS.forEach(c => {
+    const col = document.createElement('section'); col.className = 'col' + (c.parked ? ' parked' : '');
+    const ids = state.order[c.id] || [];
+    const wc = ids.map(card).filter(k => k && k.type !== 'graphic').reduce((n,k) => n + words(k[lang]||''), 0);
+    col.innerHTML = `<div class="colhead"><div class="k">${c.k[lang]}</div><div class="t">${c.t[lang]}</div><div class="q">${c.q[lang]}</div><div class="wc">${ids.length} ${t('blocks')} · ~${wc} ${t('words')}</div></div>`;
+    const list = document.createElement('div'); list.className = 'list'; list.dataset.col = c.id;
+    ids.forEach(id => { const k = card(id); if (k) list.appendChild(cardEl(k)); });
+    col.appendChild(list); board.appendChild(col);
+    new Sortable(list, {group:'blocks', animation:150, ghostClass:'ghost', chosenClass:'chosen', filter:'.x,[contenteditable=true]', preventOnFilter:false,
+      onEnd(){ document.querySelectorAll('.list').forEach(l => state.order[l.dataset.col] = [...l.children].map(e => e.dataset.id)); save(); render(); }});
+  });
+}
+function cardEl(k){
+  const el = document.createElement('div'); el.className = `card t-${k.type}` + (compact ? ' compact' : ''); el.dataset.id = k.id;
+  el.innerHTML = `<div class="chip">${(TYPE[k.type]||{})[lang]||k.type}</div><div class="txt"></div>${k.img ? `<img src="img/${k.img}-${lang}.jpg" alt="">` : ''}${k.src ? `<div class="src">${k.src}</div>` : ''}<button class="x" title="×">×</button>`;
+  const txt = el.querySelector('.txt'); txt.textContent = k[lang] || k.da || k.en || '';
+  txt.addEventListener('dblclick', () => { txt.contentEditable = 'true'; txt.focus(); });
+  txt.addEventListener('blur', () => {
+    if (txt.contentEditable !== 'true') return; txt.contentEditable = 'false';
+    const v = txt.innerText.trim(); if (v === (k[lang]||'')) return;
+    (state.edits[k.id] ||= {})[lang] = v; save(); render();
+  });
+  txt.addEventListener('keydown', e => { if (e.key === 'Escape') { txt.textContent = k[lang]||''; txt.contentEditable = 'false'; } if (e.key === 'Enter' && (e.metaKey||e.ctrlKey)) txt.blur(); });
+  el.querySelector('.x').addEventListener('click', () => {
+    if (!confirm(t('del'))) return;
+    for (const c in state.order) state.order[c] = state.order[c].filter(i => i !== k.id);
+    (state.removed ||= []).push(k.id); save(); render();
+  });
+  return el;
+}
+function toast(m){ const el = document.getElementById('toast'); el.textContent = m; el.classList.add('on'); setTimeout(() => el.classList.remove('on'), 2200); }
+async function copy(s, m){ try { await navigator.clipboard.writeText(s); toast(m); } catch(e){ prompt('', s); } }
+
+document.getElementById('lang').addEventListener('click', e => { const l = e.target.dataset.l; if (!l) return; lang = l; document.querySelectorAll('#lang button').forEach(b => b.classList.toggle('on', b.dataset.l === l)); render(); });
+document.getElementById('view').addEventListener('click', e => { const v = e.target.dataset.v; if (!v) return; compact = v === 'compact'; document.querySelectorAll('#view button').forEach(b => b.classList.toggle('on', b.dataset.v === v)); render(); });
+document.getElementById('reset').addEventListener('click', () => { if (confirm(t('resetq'))) { state = defaults(); save(); render(); } });
+document.getElementById('share').addEventListener('click', () => copy(location.origin + location.pathname + '#s=' + enc(state), t('linkcopied')));
+document.getElementById('outline').addEventListener('click', () => {
+  const out = COLS.map(c => `## ${c.k[lang]}: ${c.t[lang]}\n` + (state.order[c.id]||[]).map(card).filter(Boolean).map((k,i) => `${i+1}. [${(TYPE[k.type]||{})[lang]}] ${(k[lang]||'').replace(/\n/g,' / ')}`).join('\n')).join('\n\n');
+  copy(out, t('copied'));
+});
+const dlg = document.getElementById('dlg');
+document.getElementById('add').addEventListener('click', () => {
+  document.getElementById('ncol').innerHTML = COLS.map(c => `<option value="${c.id}">${c.t[lang]}</option>`).join('');
+  document.getElementById('nda').value = ''; document.getElementById('nen').value = ''; dlg.showModal();
+});
+dlg.addEventListener('close', () => {
+  if (dlg.returnValue !== 'ok') return;
+  const da = document.getElementById('nda').value.trim(), en = document.getElementById('nen').value.trim(); if (!da && !en) return;
+  const k = {id:'n' + Date.now().toString(36), type:document.getElementById('ntype').value, src:lang === 'da' ? 'ny' : 'new', da:da || en, en:en || da};
+  (state.added ||= []).push(k); (state.order[document.getElementById('ncol').value] ||= []).push(k.id); save(); render();
+});
+load(); render();
+</script>
+</body>
+</html>
