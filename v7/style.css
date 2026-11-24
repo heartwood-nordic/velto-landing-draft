@@ -64,3 +64,5 @@ p.mission{color:var(--ink);font-size:46px;line-height:1.12}
 .drives{margin-top:44px;display:flex;align-items:center;gap:22px;flex-wrap:wrap}
 .drives .caps{color:var(--muted)} .drives div{display:flex;gap:10px;flex-wrap:wrap}
 .drives div span{font-size:16px;font-weight:500;padding:12px 20px;border:1.5px solid var(--ink);border-radius:10px;background:#fff}
+.fit{background:#fff;border-radius:18px;padding:28px;overflow-x:auto} .fit svg{min-width:760px}
+@media (max-width:900px){.fit{padding:14px}}
