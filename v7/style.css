@@ -61,3 +61,6 @@ p.mission{color:var(--ink);font-size:46px;line-height:1.12}
 @media (max-width:900px){p.mission{font-size:30px}}
 .beats.four{grid-template-columns:repeat(4,1fr)} .beats.four p{font-size:17px}
 @media (max-width:900px){.beats.four{grid-template-columns:1fr!important}}
+.drives{margin-top:44px;display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.drives .caps{color:var(--muted)} .drives div{display:flex;gap:10px;flex-wrap:wrap}
+.drives div span{font-size:16px;font-weight:500;padding:12px 20px;border:1.5px solid var(--ink);border-radius:10px;background:#fff}
